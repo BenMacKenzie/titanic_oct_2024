@@ -30,8 +30,8 @@ jobs:
       - name: Validate Bundle For Prod
         id: validate
         run: |
-          databricks bundle validate -t bmac
+          databricks bundle validate -t prod
       - name: Deploy Bundle to Prod
         id: deploy
         run: |
-          databricks bundle deploy -t bmac
+          databricks bundle deploy -t prod
