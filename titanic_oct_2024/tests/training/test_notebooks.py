@@ -1,6 +1,5 @@
 import pathlib
 
-
 def test_notebook_format():
     # Verify that all Databricks notebooks have the required header
     paths = list(pathlib.Path("./notebooks").glob("**/*.py"))
