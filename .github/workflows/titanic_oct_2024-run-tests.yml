@@ -1,0 +1,56 @@
+name: Training Unit and Integration Tests for titanic_oct_2024
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'titanic_oct_2024/**'
+      - '.github/workflows/titanic_oct_2024-run-tests.yml'
+
+defaults:
+  run:
+    working-directory: ./titanic_oct_2024/
+
+env:
+  ARM_TENANT_ID: ${{ secrets.STAGING_AZURE_SP_TENANT_ID }}
+  ARM_CLIENT_ID: ${{ secrets.STAGING_AZURE_SP_APPLICATION_ID }}
+  ARM_CLIENT_SECRET: ${{ secrets.STAGING_AZURE_SP_CLIENT_SECRET }}
+  
+
+concurrency: titanic_oct_2024-training-integration-test-staging
+
+jobs:
+  unit_tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.8
+      - name: Install dependencies
+        run: |
+            python -m pip install --upgrade pip
+            pip install -r requirements.txt
+            pip install -r ../test-requirements.txt
+      - name: Run tests with pytest
+        run: |
+            pytest
+
+  integration_test:
+    needs: unit_tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+      - uses: databricks/setup-cli@v0.221.0
+      - name: Validate Bundle For Test Deployment Target in Staging Workspace
+        id: validate
+        run: |
+          databricks bundle validate -t bmac
+      - name: Deploy Bundle to Test Deployment Target in Staging Workspace
+        id: deploy
+        run: |
+          databricks bundle deploy -t bmac
+      - name: Run Training Workflow for Test Deployment Target in Staging Workspace
+        id: training
+        run: |
+          databricks bundle run model_training_job -t bmac
