@@ -50,7 +50,7 @@ jobs:
       - name: Update databricks.yml
         id: update
         run: |
-          echo -e "  bmac:\n    workspace:\n      host: https://adb-984752964297111.11.azuredatabricks.net\n\n  bmac:\n    workspace:\n      host: https://adb-984752964297111.11.azuredatabricks.net\n\n  bmac:\n    workspace:\n      host: https://adb-984752964297111.11.azuredatabricks.net" >> "$PROJECT_NAME_ALPHA/databricks.yml"
+          echo -e "  staging:\n    workspace:\n      host: https://adb-984752964297111.11.azuredatabricks.net\n\n  prod:\n    workspace:\n      host: https://adb-984752964297111.11.azuredatabricks.net\n\n  bmac:\n    workspace:\n      host: https://adb-984752964297111.11.azuredatabricks.net" >> "$PROJECT_NAME_ALPHA/databricks.yml"
       - name: Initialize Bundle
         id: initialize
         run: |
